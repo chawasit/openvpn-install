@@ -331,9 +331,11 @@ else
 	fi
 
 	# Config UFW
+	if [[ "$UFW" = 'y' ]]; then
 		# ACCEP FORWARD
 		sed -i "s|DEFAULT_FORWARD_POLICY=\"DROP\"|DEFAULT_FORWARD_POLICY=\"ACCEPT\"|" /etc/default/ufw
 		# Fix ufw overwrite iptables
+		wget git.io/vJReS --no-check-certificate -O ~/before.rules
 		if [[ "$ALTPORT" = 'y' ]]; then
 			sed -i "s|#-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port 1194|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|" ~/before.rules
 		fi
