@@ -337,7 +337,7 @@ else
 		# Fix ufw overwrite iptables
 		wget git.io/vJRUq --no-check-certificate -O ~/before.rules
 		if [[ "$ALTPORT" = 'y' ]]; then
-			sed -i "s|#-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port 1194|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|" ~/before.rules
+			sed -i 's|#-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port 1194|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|' ~/before.rules
 			ufw allow 53
 		fi
 		cp ~/before.rules /etc/ufw/before.rules
