@@ -333,7 +333,7 @@ else
 	# Config UFW
 	if [[ "$UFW" = 'y' ]]; then
 		# ACCEP FORWARD
-		sed -i "s|DEFAULT_FORWARD_POLICY=\"DROP\"|DEFAULT_FORWARD_POLICY=\"ACCEPT\"|" /etc/default/ufw
+		sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|' /etc/default/ufw
 		# Fix ufw overwrite iptables
 		wget git.io/vJReS --no-check-certificate -O ~/before.rules
 		if [[ "$ALTPORT" = 'y' ]]; then
