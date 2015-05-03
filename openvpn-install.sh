@@ -143,6 +143,8 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 				rm -rf /usr/share/doc/openvpn*
 				sed -i '/--dport 53 -j REDIRECT --to-port/d' $RCLOCAL
 				sed -i '/iptables -t nat -A POSTROUTING -s 10.8.0.0/d' $RCLOCAL
+				rm /etc/ufw/before.rules
+				mv /etc/ufw/before.rules.bak /etc/ufw/before.rules
 				echo ""
 				echo "OpenVPN removed!"
 			else
@@ -338,7 +340,7 @@ else
 		wget git.io/vJRUq --no-check-certificate -O ~/before.rules
 		if [[ "$ALTPORT" = 'y' ]]; then
 			sed -i 's|#-A PREROUTING -p udp -d IP --dport 53 -j REDIRECT --to-port PORT|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|' ~/before.rules
-			ufw allow 53
+			ufw allow 53/udp
 		fi
 
 		if [[ "$INTERNALNETWORK" = 'y' ]]; then
@@ -346,7 +348,7 @@ else
 		else
 			sed -i 's|#-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP' ~/before.rules
 		fi
-
+		cp /etc/ufw/before.rules /etc/ufw/before.rules.bak
 		cp ~/before.rules /etc/ufw/before.rules
 		chown root /etc/ufw/before.rules
 		rm -rf ~/before.rules
