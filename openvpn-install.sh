@@ -337,13 +337,20 @@ else
 		# Fix ufw overwrite iptables
 		wget git.io/vJRUq --no-check-certificate -O ~/before.rules
 		if [[ "$ALTPORT" = 'y' ]]; then
-			sed -i 's|#-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port 1194|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|' ~/before.rules
+			sed -i 's|#-A PREROUTING -p udp -d IP --dport 53 -j REDIRECT --to-port PORT|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|' ~/before.rules
 			ufw allow 53
 		fi
+
+		if [[ "$INTERNALNETWORK" = 'y' ]]; then
+			sed -i 's|#-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to $IP' ~/before.rules
+		else
+			sed -i 's|#-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP' ~/before.rules
+		fi
+
 		cp ~/before.rules /etc/ufw/before.rules
 		chown root /etc/ufw/before.rules
 		rm -rf ~/before.rules
-		# allow port
+
 		ufw allow ssh
 		ufw allow 1194/udp
 		echo "Enable UFW"

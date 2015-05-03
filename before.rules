@@ -11,10 +11,19 @@
 # START OPENVPN RULES
 # NAT table rules
 *nat
+:PREROUTING ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+# Forward alternative port
+#-A PREROUTING -p udp -d IP --dport 53 -j REDIRECT --to-port PORT
+
 # Allow traffic from OpenVPN client to eth0
 -A POSTROUTING -s 10.8.0.0/8 -o eth0 -j MASQUERADE
-#-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port 1194
+
+# Allow Internal Network
+#-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to IP
+# Else
+#-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to IP
+
 COMMIT
 # END OPENVPN RULES
 
