@@ -339,14 +339,14 @@ else
 		# Fix ufw overwrite iptables
 		wget git.io/vJRUq --no-check-certificate -O ~/before.rules
 		if [[ "$ALTPORT" = 'y' ]]; then
-			sed -i 's|#-A PREROUTING -p udp -d IP --dport 53 -j REDIRECT --to-port PORT|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|' ~/before.rules
+			sed -i "s|#-A PREROUTING -p udp -d IP --dport 53 -j REDIRECT --to-port PORT|-A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-port $PORT|" ~/before.rules
 			ufw allow 53/udp
 		fi
 
 		if [[ "$INTERNALNETWORK" = 'y' ]]; then
-			sed -i 's|#-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to $IP' ~/before.rules
+			sed -i "s|#-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to $IP|" ~/before.rules
 		else
-			sed -i 's|#-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP' ~/before.rules
+			sed -i "s|#-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to IP|-A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP|" ~/before.rules
 		fi
 		cp /etc/ufw/before.rules /etc/ufw/before.rules.bak
 		cp ~/before.rules /etc/ufw/before.rules
@@ -370,4 +370,5 @@ else
 	echo ""
 	echo "Your client config is available at ~/$CLIENT.ovpn"
 	echo "If you want to add more clients, you simply need to run this script another time!"
+	echo "sudo bash openvpn-install.sh"
 fi
